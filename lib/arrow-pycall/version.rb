@@ -13,5 +13,5 @@
 # limitations under the License.
 
 module ArrowPyCall
-  VERSION = "0.0.2"
+  VERSION = "0.0.3"
 end
