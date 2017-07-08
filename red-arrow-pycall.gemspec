@@ -23,7 +23,7 @@ require "arrow-pycall/version"
 
 Gem::Specification.new do |spec|
   spec.name = "red-arrow-pycall"
-  spec.version = ArrowPycall::VERSION
+  spec.version = ArrowPyCall::VERSION
   spec.homepage = "https://github.com/red-data-tools/red-arrow-pycall"
   spec.authors = ["Kouhei Sutou"]
   spec.email = ["kou@clear-code.com"]
