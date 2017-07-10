@@ -60,7 +60,7 @@ rb_arrow_data_type_to_python_object_pointer(VALUE self)
   auto data_type = GARROW_DATA_TYPE(RVAL2GOBJ(self));
   auto arrow_data_type = garrow_data_type_get_raw(data_type);
   auto py_data_type = arrow::py::wrap_data_type(arrow_data_type);
-  return PTR2NUM(y_data_type);
+  return PTR2NUM(py_data_type);
 }
 
 static VALUE
