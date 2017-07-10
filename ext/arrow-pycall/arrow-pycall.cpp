@@ -20,8 +20,11 @@
 
 #include <arrow/python/pyarrow.h>
 
-template<bool long_gteq_pointer>
-struct pointer2value {
+template<bool long_size_is_greater_than_pointer_size>
+struct pointer2value;
+
+template<>
+struct pointer2value<true> {
   VALUE operator()(void* ptr)
   {
     return LONG2NUM(reinterpret_cast<long>(ptr));
