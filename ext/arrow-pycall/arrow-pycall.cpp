@@ -35,7 +35,7 @@ template<>
 struct pointer2value<false> {
   VALUE operator()(void* ptr)
   {
-    return LL2NUM((LONG_LONG)ptr);
+    return LL2NUM(reinterpret_cast<LONG_LONG>(ptr));
   }
 };
 
