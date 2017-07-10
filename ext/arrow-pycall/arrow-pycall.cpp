@@ -25,25 +25,25 @@ struct pointer2value;
 
 template<>
 struct pointer2value<true> {
-  VALUE operator()(void* ptr)
+  VALUE operator()(void *pointer)
   {
-    return LONG2NUM(reinterpret_cast<long>(ptr));
+    return LONG2NUM(reinterpret_cast<long>(pointer));
   }
 };
 
 template<>
 struct pointer2value<false> {
-  VALUE operator()(void* ptr)
+  VALUE operator()(void *pointer)
   {
-    return LL2NUM(reinterpret_cast<LONG_LONG>(ptr));
+    return LL2NUM(reinterpret_cast<LONG_LONG>(pointer));
   }
 };
 
 static inline VALUE
-PTR2NUM(void* ptr)
+PTR2NUM(void *pointer)
 {
-  typedef pointer2value<(sizeof(long) >= sizeof(void*))> converter_type;
-  return converter_type()(ptr);
+  pointer2value<(sizeof(long) >= sizeof(void *))> converter;
+  return converter(pointer);
 }
 
 extern "C" void Init_arrow_pycall(void);
