@@ -21,26 +21,20 @@
 #include <arrow/python/pyarrow.h>
 
 namespace {
-  template<bool long_size_is_greater_than_pointer_size>
-  struct ObjectConverter;
+  VALUE number_to_ruby(long number) {
+    g_print("long\n");
+    return LONG2NUM(number);
+  }
 
-  template<>
-  struct ObjectConverter<true> {
-    VALUE to_ruby(void *pointer) {
-      return LONG2NUM(reinterpret_cast<long>(pointer));
-    }
-  };
-
-  template<>
-  struct ObjectConverter<false> {
-    VALUE to_ruby(void *pointer) {
-      return LL2NUM(reinterpret_cast<LONG_LONG>(pointer));
-    }
-  };
+  VALUE number_to_ruby(LONG_LONG number) {
+    g_print("long long\n");
+    return LL2NUM(number);
+  }
 
   VALUE pointer_to_ruby(void *pointer) {
-    ObjectConverter<(sizeof(long) >= sizeof(void *))> converter;
-    return converter.to_ruby(pointer);
+    using number_type =
+      std::conditional<sizeof(long) >= sizeof(void *), long, LONG_LONG>::type;
+    return number_to_ruby(reinterpret_cast<number_type>(pointer));
   }
 }
 
