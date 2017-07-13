@@ -12,37 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class ToPythonTest < Test::Unit::TestCase
+class ToRubyTest < Test::Unit::TestCase
   test("Buffer") do
     data = "hello"
     buffer = Arrow::Buffer.new(data)
-    assert_equal(data, buffer.to_python.to_pybytes)
+    py_buffer = buffer.to_python
+    assert_equal(data, py_buffer.to_ruby.data.to_s)
   end
 
   test("DataType") do
     data_type = Arrow::BooleanDataType.new
-    assert_equal(data_type.to_s,
-                 data_type.to_python.__str__)
+    py_data_type = data_type.to_python
+    assert_equal(data_type.to_s, py_data_type.to_ruby.to_s)
   end
 
   test("Field") do
     field = Arrow::Field.new("enabled", Arrow::BooleanDataType.new)
-    assert_equal("pyarrow.Field<#{field}>",
-                 field.to_python.__str__)
+    assert_equal(field.to_s,
+                 field.to_python.to_ruby.to_s)
   end
 
   test("Schema") do
     field = Arrow::Field.new("enabled", Arrow::BooleanDataType.new)
     schema = Arrow::Schema.new([field])
     assert_equal(schema.to_s,
-                 schema.to_python.__str__)
+                 schema.to_python.to_ruby.to_s)
   end
 
   test("Array") do
     elements = [1, -2, 4]
     array = Arrow::Int8Array.new(elements)
     assert_equal(elements,
-                 array.to_python.to_pylist)
+                 array.to_python.to_ruby.to_a)
   end
 
   test("Tensor") do
@@ -65,16 +66,8 @@ class ToPythonTest < Test::Unit::TestCase
                                shape,
                                strides,
                                names)
-    assert_equal(<<-TENSOR.chomp, tensor.to_python.to_numpy.__str__.())
-[[[ 1  2]
-  [ 3  4]]
-
- [[ 5  6]
-  [ 7  8]]
-
- [[ 9 10]
-  [11 12]]]
-    TENSOR
+    assert_equal(tensor.buffer.data.to_s,
+                 tensor.to_python.to_ruby.buffer.data.to_s)
   end
 
   test("Column") do
@@ -82,7 +75,7 @@ class ToPythonTest < Test::Unit::TestCase
     array = Arrow::BooleanArray.new([true, false, true])
     column = Arrow::Column.new(field, array)
     assert_equal([true, false, true],
-                 column.to_python.to_pylist)
+                 column.to_python.to_ruby.to_a)
   end
 
   test("Table") do
@@ -91,12 +84,8 @@ class ToPythonTest < Test::Unit::TestCase
     array = Arrow::BooleanArray.new([true, false, true])
     column = Arrow::Column.new(field, array)
     table = Arrow::Table.new(schema, [column])
-    assert_equal(<<-TABLE.chomp, table.to_python.to_pandas.to_s)
-   enabled
-0     True
-1    False
-2     True
-    TABLE
+    assert_equal(table.each_column.collect(&:to_a),
+                 table.to_python.to_ruby.each_column.collect(&:to_a))
   end
 
   test("RecordBatch") do
@@ -104,11 +93,7 @@ class ToPythonTest < Test::Unit::TestCase
     schema = Arrow::Schema.new([field])
     array = Arrow::BooleanArray.new([true, false, true])
     record_batch = Arrow::RecordBatch.new(schema, 3, [array])
-    assert_equal(<<-RECORD_BATCH.chomp, record_batch.to_python.to_pandas.to_s)
-   enabled
-0     True
-1    False
-2     True
-    RECORD_BATCH
+    assert_equal(record_batch.to_s,
+                 record_batch.to_python.to_ruby.to_s)
   end
 end

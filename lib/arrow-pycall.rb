@@ -17,13 +17,6 @@ require "pycall"
 
 require "arrow-pycall/version"
 
-begin
-  major, minor, _ = RUBY_VERSION.split(/\./)
-  require "#{major}.#{minor}/arrow_pycall.so"
-rescue LoadError
-  require "arrow_pycall.so"
-end
-
 require "arrow-pycall/convertable"
 
 module Arrow
@@ -62,4 +55,69 @@ module Arrow
   class RecordBatch
     include ArrowPyCall::Convertable
   end
+end
+
+module PyArrow
+  class << self
+    def __pyobj__
+      @pyarrow ||= PyCall.import_module("pyarrow")
+    end
+  end
+
+  class Buffer
+    include PyCall::PyObjectWrapper
+    wrap_class PyArrow.__pyobj__.Buffer
+  end
+
+  class DataType
+    include PyCall::PyObjectWrapper
+    wrap_class PyArrow.__pyobj__.lib.DataType
+  end
+
+  class Field
+    include PyCall::PyObjectWrapper
+    wrap_class PyArrow.__pyobj__.Field
+  end
+
+  class Schema
+    include PyCall::PyObjectWrapper
+    wrap_class PyArrow.__pyobj__.Schema
+  end
+
+  class Array
+    include PyCall::PyObjectWrapper
+    wrap_class PyArrow.__pyobj__.Array
+  end
+
+  class Tensor
+    include PyCall::PyObjectWrapper
+    wrap_class PyArrow.__pyobj__.Tensor
+  end
+
+  class Column
+    include PyCall::PyObjectWrapper
+    wrap_class PyArrow.__pyobj__.Column
+  end
+
+  class Table
+    include PyCall::PyObjectWrapper
+    wrap_class PyArrow.__pyobj__.Table
+  end
+
+  class Table
+    include PyCall::PyObjectWrapper
+    wrap_class PyArrow.__pyobj__.Table
+  end
+
+  class RecordBatch
+    include PyCall::PyObjectWrapper
+    wrap_class PyArrow.__pyobj__.RecordBatch
+  end
+end
+
+begin
+  major, minor, _ = RUBY_VERSION.split(/\./)
+  require "#{major}.#{minor}/arrow_pycall.so"
+rescue LoadError
+  require "arrow_pycall.so"
 end
