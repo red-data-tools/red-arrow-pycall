@@ -29,10 +29,23 @@ namespace {
     return LL2NUM(number);
   }
 
-  VALUE pointer_to_ruby(void *pointer) {
+  VALUE py_object_to_ruby(PyObject *py_object) {
     using number_type =
       std::conditional<sizeof(long) >= sizeof(void *), long, LONG_LONG>::type;
-    return number_to_ruby(reinterpret_cast<number_type>(pointer));
+    auto rb_pointer = number_to_ruby(reinterpret_cast<number_type>(py_object));
+    auto rbFFI = rb_const_get(rb_cObject, rb_intern("FFI"));
+    auto rbFFIPointer = rb_const_get(rbFFI, rb_intern("Pointer"));
+    auto rb_ffi_pointer =
+      rb_funcall(rbFFIPointer, rb_intern("new"), 1, rb_pointer);
+    auto rbPyCall = rb_const_get(rb_cObject, rb_intern("PyCall"));
+    auto rbPyCallLibPython =
+      rb_const_get(rbPyCall, rb_intern("LibPython"));
+    auto rbPyCallLibPythonPyObjectStruct =
+      rb_const_get(rbPyCallLibPython, rb_intern("PyObjectStruct"));
+    auto rb_py_object_struct =
+      rb_funcall(rbPyCallLibPythonPyObjectStruct,
+                 rb_intern("new"), 1, rb_ffi_pointer);
+    return rb_funcall(rb_py_object_struct, rb_intern("to_ruby"), 0);
   }
 
   template <typename RETURN_TYPE>
@@ -67,12 +80,12 @@ namespace {
 extern "C" void Init_arrow_pycall(void);
 
 static VALUE
-rb_arrow_buffer_to_python_object_pointer(VALUE self)
+rb_arrow_buffer_to_python(VALUE self)
 {
   auto buffer = GARROW_BUFFER(RVAL2GOBJ(self));
   auto arrow_buffer = garrow_buffer_get_raw(buffer);
   auto py_buffer = arrow::py::wrap_buffer(arrow_buffer);
-  return pointer_to_ruby(py_buffer);
+  return py_object_to_ruby(py_buffer);
 }
 
 static VALUE
@@ -89,12 +102,12 @@ rb_pycall_arrow_buffer_to_ruby(VALUE self)
 }
 
 static VALUE
-rb_arrow_data_type_to_python_object_pointer(VALUE self)
+rb_arrow_data_type_to_python(VALUE self)
 {
   auto data_type = GARROW_DATA_TYPE(RVAL2GOBJ(self));
   auto arrow_data_type = garrow_data_type_get_raw(data_type);
   auto py_data_type = arrow::py::wrap_data_type(arrow_data_type);
-  return pointer_to_ruby(py_data_type);
+  return py_object_to_ruby(py_data_type);
 }
 
 static VALUE
@@ -111,12 +124,12 @@ rb_pycall_arrow_data_type_to_ruby(VALUE self)
 }
 
 static VALUE
-rb_arrow_field_to_python_object_pointer(VALUE self)
+rb_arrow_field_to_python(VALUE self)
 {
   auto field = GARROW_FIELD(RVAL2GOBJ(self));
   auto arrow_field = garrow_field_get_raw(field);
   auto py_field = arrow::py::wrap_field(arrow_field);
-  return pointer_to_ruby(py_field);
+  return py_object_to_ruby(py_field);
 }
 
 static VALUE
@@ -133,12 +146,12 @@ rb_pycall_arrow_field_to_ruby(VALUE self)
 }
 
 static VALUE
-rb_arrow_schema_to_python_object_pointer(VALUE self)
+rb_arrow_schema_to_python(VALUE self)
 {
   auto schema = GARROW_SCHEMA(RVAL2GOBJ(self));
   auto arrow_schema = garrow_schema_get_raw(schema);
   auto py_schema = arrow::py::wrap_schema(arrow_schema);
-  return pointer_to_ruby(py_schema);
+  return py_object_to_ruby(py_schema);
 }
 
 static VALUE
@@ -155,12 +168,12 @@ rb_pycall_arrow_schema_to_ruby(VALUE self)
 }
 
 static VALUE
-rb_arrow_array_to_python_object_pointer(VALUE self)
+rb_arrow_array_to_python(VALUE self)
 {
   auto array = GARROW_ARRAY(RVAL2GOBJ(self));
   auto arrow_array = garrow_array_get_raw(array);
   auto py_array = arrow::py::wrap_array(arrow_array);
-  return pointer_to_ruby(py_array);
+  return py_object_to_ruby(py_array);
 }
 
 static VALUE
@@ -177,12 +190,12 @@ rb_pycall_arrow_array_to_ruby(VALUE self)
 }
 
 static VALUE
-rb_arrow_tensor_to_python_object_pointer(VALUE self)
+rb_arrow_tensor_to_python(VALUE self)
 {
   auto tensor = GARROW_TENSOR(RVAL2GOBJ(self));
   auto arrow_tensor = garrow_tensor_get_raw(tensor);
   auto py_tensor = arrow::py::wrap_tensor(arrow_tensor);
-  return pointer_to_ruby(py_tensor);
+  return py_object_to_ruby(py_tensor);
 }
 
 static VALUE
@@ -199,12 +212,12 @@ rb_pycall_arrow_tensor_to_ruby(VALUE self)
 }
 
 static VALUE
-rb_arrow_column_to_python_object_pointer(VALUE self)
+rb_arrow_column_to_python(VALUE self)
 {
   auto column = GARROW_COLUMN(RVAL2GOBJ(self));
   auto arrow_column = garrow_column_get_raw(column);
   auto py_column = arrow::py::wrap_column(arrow_column);
-  return pointer_to_ruby(py_column);
+  return py_object_to_ruby(py_column);
 }
 
 static VALUE
@@ -221,12 +234,12 @@ rb_pycall_arrow_column_to_ruby(VALUE self)
 }
 
 static VALUE
-rb_arrow_table_to_python_object_pointer(VALUE self)
+rb_arrow_table_to_python(VALUE self)
 {
   auto table = GARROW_TABLE(RVAL2GOBJ(self));
   auto arrow_table = garrow_table_get_raw(table);
   auto py_table = arrow::py::wrap_table(arrow_table);
-  return pointer_to_ruby(py_table);
+  return py_object_to_ruby(py_table);
 }
 
 static VALUE
@@ -243,12 +256,12 @@ rb_pycall_arrow_table_to_ruby(VALUE self)
 }
 
 static VALUE
-rb_arrow_record_batch_to_python_object_pointer(VALUE self)
+rb_arrow_record_batch_to_python(VALUE self)
 {
   auto record_batch = GARROW_RECORD_BATCH(RVAL2GOBJ(self));
   auto arrow_record_batch = garrow_record_batch_get_raw(record_batch);
   auto py_record_batch = arrow::py::wrap_record_batch(arrow_record_batch);
-  return pointer_to_ruby(py_record_batch);
+  return py_object_to_ruby(py_record_batch);
 }
 
 static VALUE
@@ -276,8 +289,8 @@ Init_arrow_pycall(void)
   {
     auto rbArrowBuffer = rb_const_get(rbArrow, rb_intern("Buffer"));
     rb_define_method(rbArrowBuffer,
-                     "to_python_object_pointer",
-                     (VALUE(*)(ANYARGS))rb_arrow_buffer_to_python_object_pointer,
+                     "to_python",
+                     (VALUE(*)(ANYARGS))rb_arrow_buffer_to_python,
                      0);
   }
   {
@@ -291,8 +304,8 @@ Init_arrow_pycall(void)
   {
     auto rbArrowDataType = rb_const_get(rbArrow, rb_intern("DataType"));
     rb_define_method(rbArrowDataType,
-                     "to_python_object_pointer",
-                     (VALUE(*)(ANYARGS))rb_arrow_data_type_to_python_object_pointer,
+                     "to_python",
+                     (VALUE(*)(ANYARGS))rb_arrow_data_type_to_python,
                      0);
   }
   {
@@ -306,8 +319,8 @@ Init_arrow_pycall(void)
   {
     auto rbArrowField = rb_const_get(rbArrow, rb_intern("Field"));
     rb_define_method(rbArrowField,
-                     "to_python_object_pointer",
-                     (VALUE(*)(ANYARGS))rb_arrow_field_to_python_object_pointer,
+                     "to_python",
+                     (VALUE(*)(ANYARGS))rb_arrow_field_to_python,
                      0);
   }
   {
@@ -321,8 +334,8 @@ Init_arrow_pycall(void)
   {
     auto rbArrowSchema = rb_const_get(rbArrow, rb_intern("Schema"));
     rb_define_method(rbArrowSchema,
-                     "to_python_object_pointer",
-                     (VALUE(*)(ANYARGS))rb_arrow_schema_to_python_object_pointer,
+                     "to_python",
+                     (VALUE(*)(ANYARGS))rb_arrow_schema_to_python,
                      0);
   }
   {
@@ -336,8 +349,8 @@ Init_arrow_pycall(void)
   {
     auto rbArrowArray = rb_const_get(rbArrow, rb_intern("Array"));
     rb_define_method(rbArrowArray,
-                     "to_python_object_pointer",
-                     (VALUE(*)(ANYARGS))rb_arrow_array_to_python_object_pointer,
+                     "to_python",
+                     (VALUE(*)(ANYARGS))rb_arrow_array_to_python,
                      0);
   }
   {
@@ -351,8 +364,8 @@ Init_arrow_pycall(void)
   {
     auto rbArrowTensor = rb_const_get(rbArrow, rb_intern("Tensor"));
     rb_define_method(rbArrowTensor,
-                     "to_python_object_pointer",
-                     (VALUE(*)(ANYARGS))rb_arrow_tensor_to_python_object_pointer,
+                     "to_python",
+                     (VALUE(*)(ANYARGS))rb_arrow_tensor_to_python,
                      0);
   }
   {
@@ -366,8 +379,8 @@ Init_arrow_pycall(void)
   {
     auto rbArrowColumn = rb_const_get(rbArrow, rb_intern("Column"));
     rb_define_method(rbArrowColumn,
-                     "to_python_object_pointer",
-                     (VALUE(*)(ANYARGS))rb_arrow_column_to_python_object_pointer,
+                     "to_python",
+                     (VALUE(*)(ANYARGS))rb_arrow_column_to_python,
                      0);
   }
   {
@@ -381,8 +394,8 @@ Init_arrow_pycall(void)
   {
     auto rbArrowTable = rb_const_get(rbArrow, rb_intern("Table"));
     rb_define_method(rbArrowTable,
-                     "to_python_object_pointer",
-                     (VALUE(*)(ANYARGS))rb_arrow_table_to_python_object_pointer,
+                     "to_python",
+                     (VALUE(*)(ANYARGS))rb_arrow_table_to_python,
                      0);
   }
   {
@@ -396,8 +409,8 @@ Init_arrow_pycall(void)
   {
     auto rbArrowRecordBatch = rb_const_get(rbArrow, rb_intern("RecordBatch"));
     rb_define_method(rbArrowRecordBatch,
-                     "to_python_object_pointer",
-                     (VALUE(*)(ANYARGS))rb_arrow_record_batch_to_python_object_pointer,
+                     "to_python",
+                     (VALUE(*)(ANYARGS))rb_arrow_record_batch_to_python,
                      0);
   }
   {

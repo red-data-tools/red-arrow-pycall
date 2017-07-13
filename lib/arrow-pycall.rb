@@ -17,46 +17,6 @@ require "pycall"
 
 require "arrow-pycall/version"
 
-require "arrow-pycall/convertable"
-
-module Arrow
-  class Buffer
-    include ArrowPyCall::Convertable
-  end
-
-  class DataType
-    include ArrowPyCall::Convertable
-  end
-
-  class Field
-    include ArrowPyCall::Convertable
-  end
-
-  class Schema
-    include ArrowPyCall::Convertable
-  end
-
-  class Array
-    include ArrowPyCall::Convertable
-  end
-
-  class Tensor
-    include ArrowPyCall::Convertable
-  end
-
-  class Column
-    include ArrowPyCall::Convertable
-  end
-
-  class Table
-    include ArrowPyCall::Convertable
-  end
-
-  class RecordBatch
-    include ArrowPyCall::Convertable
-  end
-end
-
 module PyArrow
   class << self
     def __pyobj__
