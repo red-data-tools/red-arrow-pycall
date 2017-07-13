@@ -55,7 +55,7 @@ namespace {
     return reinterpret_cast<void *>(number);
   }
 
-  PyObject *py_call_object_to_py_object(VALUE rb_pycall_object) {
+  PyObject *pycall_object_to_py_object(VALUE rb_pycall_object) {
     auto rb_pyobj = rb_funcall(rb_pycall_object, rb_intern("__pyobj__"), 0);
     auto rb_pyobj_ffi_pointer = rb_funcall(rb_pyobj, rb_intern("pointer"), 0);
     auto rb_pyobj_pointer =
@@ -78,7 +78,7 @@ rb_arrow_buffer_to_python_object_pointer(VALUE self)
 static VALUE
 rb_pycall_arrow_buffer_to_ruby(VALUE self)
 {
-  auto py_buffer = py_call_object_to_py_object(self);
+  auto py_buffer = pycall_object_to_py_object(self);
   std::shared_ptr<arrow::Buffer> arrow_buffer;
   auto status = arrow::py::unwrap_buffer(py_buffer, &arrow_buffer);
   GError *error = NULL;
@@ -100,7 +100,7 @@ rb_arrow_data_type_to_python_object_pointer(VALUE self)
 static VALUE
 rb_pycall_arrow_data_type_to_ruby(VALUE self)
 {
-  auto py_data_type = py_call_object_to_py_object(self);
+  auto py_data_type = pycall_object_to_py_object(self);
   std::shared_ptr<arrow::DataType> arrow_data_type;
   auto status = arrow::py::unwrap_data_type(py_data_type, &arrow_data_type);
   GError *error = NULL;
@@ -122,7 +122,7 @@ rb_arrow_field_to_python_object_pointer(VALUE self)
 static VALUE
 rb_pycall_arrow_field_to_ruby(VALUE self)
 {
-  auto py_field = py_call_object_to_py_object(self);
+  auto py_field = pycall_object_to_py_object(self);
   std::shared_ptr<arrow::Field> arrow_field;
   auto status = arrow::py::unwrap_field(py_field, &arrow_field);
   GError *error = NULL;
@@ -144,7 +144,7 @@ rb_arrow_schema_to_python_object_pointer(VALUE self)
 static VALUE
 rb_pycall_arrow_schema_to_ruby(VALUE self)
 {
-  auto py_schema = py_call_object_to_py_object(self);
+  auto py_schema = pycall_object_to_py_object(self);
   std::shared_ptr<arrow::Schema> arrow_schema;
   auto status = arrow::py::unwrap_schema(py_schema, &arrow_schema);
   GError *error = NULL;
@@ -166,7 +166,7 @@ rb_arrow_array_to_python_object_pointer(VALUE self)
 static VALUE
 rb_pycall_arrow_array_to_ruby(VALUE self)
 {
-  auto py_array = py_call_object_to_py_object(self);
+  auto py_array = pycall_object_to_py_object(self);
   std::shared_ptr<arrow::Array> arrow_array;
   auto status = arrow::py::unwrap_array(py_array, &arrow_array);
   GError *error = NULL;
@@ -188,7 +188,7 @@ rb_arrow_tensor_to_python_object_pointer(VALUE self)
 static VALUE
 rb_pycall_arrow_tensor_to_ruby(VALUE self)
 {
-  auto py_tensor = py_call_object_to_py_object(self);
+  auto py_tensor = pycall_object_to_py_object(self);
   std::shared_ptr<arrow::Tensor> arrow_tensor;
   auto status = arrow::py::unwrap_tensor(py_tensor, &arrow_tensor);
   GError *error = NULL;
@@ -210,7 +210,7 @@ rb_arrow_column_to_python_object_pointer(VALUE self)
 static VALUE
 rb_pycall_arrow_column_to_ruby(VALUE self)
 {
-  auto py_column = py_call_object_to_py_object(self);
+  auto py_column = pycall_object_to_py_object(self);
   std::shared_ptr<arrow::Column> arrow_column;
   auto status = arrow::py::unwrap_column(py_column, &arrow_column);
   GError *error = NULL;
@@ -232,7 +232,7 @@ rb_arrow_table_to_python_object_pointer(VALUE self)
 static VALUE
 rb_pycall_arrow_table_to_ruby(VALUE self)
 {
-  auto py_table = py_call_object_to_py_object(self);
+  auto py_table = pycall_object_to_py_object(self);
   std::shared_ptr<arrow::Table> arrow_table;
   auto status = arrow::py::unwrap_table(py_table, &arrow_table);
   GError *error = NULL;
@@ -254,7 +254,7 @@ rb_arrow_record_batch_to_python_object_pointer(VALUE self)
 static VALUE
 rb_pycall_arrow_record_batch_to_ruby(VALUE self)
 {
-  auto py_record_batch = py_call_object_to_py_object(self);
+  auto py_record_batch = pycall_object_to_py_object(self);
   std::shared_ptr<arrow::RecordBatch> arrow_record_batch;
   auto status =
     arrow::py::unwrap_record_batch(py_record_batch, &arrow_record_batch);
