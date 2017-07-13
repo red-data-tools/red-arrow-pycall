@@ -92,10 +92,10 @@ class ToPythonTest < Test::Unit::TestCase
     column = Arrow::Column.new(field, array)
     table = Arrow::Table.new(schema, [column])
     assert_equal(<<-TABLE.chomp, table.to_python.to_pandas.().to_s)
-  enabled
-0    True
-1   False
-2    True
+   enabled
+0     True
+1    False
+2     True
     TABLE
   end
 
@@ -105,10 +105,10 @@ class ToPythonTest < Test::Unit::TestCase
     array = Arrow::BooleanArray.new([true, false, true])
     record_batch = Arrow::RecordBatch.new(schema, 3, [array])
     assert_equal(<<-RECORD_BATCH.chomp, record_batch.to_python.to_pandas.().to_s)
-  enabled
-0    True
-1   False
-2    True
+   enabled
+0     True
+1    False
+2     True
     RECORD_BATCH
   end
 end
