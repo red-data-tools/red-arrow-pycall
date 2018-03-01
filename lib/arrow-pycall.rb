@@ -19,59 +19,49 @@ require "arrow-pycall/version"
 
 module PyArrow
   class << self
-    def __pyobj__
+    def __pyptr__
       @pyarrow ||= PyCall.import_module("pyarrow")
     end
   end
 
+  Buffer = __pyptr__.Buffer
   class Buffer
-    include PyCall::PyObjectWrapper
-    wrap_class PyArrow.__pyobj__.Buffer
+    register_python_type_mapping
   end
 
+  DataType = __pyptr__.lib.DataType
   class DataType
-    include PyCall::PyObjectWrapper
-    wrap_class PyArrow.__pyobj__.lib.DataType
+    register_python_type_mapping
   end
 
+  Field = __pyptr__.Field
   class Field
-    include PyCall::PyObjectWrapper
-    wrap_class PyArrow.__pyobj__.Field
+    register_python_type_mapping
   end
 
+  Schema = __pyptr__.Schema
   class Schema
-    include PyCall::PyObjectWrapper
-    wrap_class PyArrow.__pyobj__.Schema
+    register_python_type_mapping
   end
 
-  class Array
-    include PyCall::PyObjectWrapper
-    wrap_class PyArrow.__pyobj__.Array
-  end
-
+  Tensor = __pyptr__.Tensor
   class Tensor
-    include PyCall::PyObjectWrapper
-    wrap_class PyArrow.__pyobj__.Tensor
+    register_python_type_mapping
   end
 
+  Column = __pyptr__.Column
   class Column
-    include PyCall::PyObjectWrapper
-    wrap_class PyArrow.__pyobj__.Column
+    register_python_type_mapping
   end
 
+  Table = __pyptr__.Table
   class Table
-    include PyCall::PyObjectWrapper
-    wrap_class PyArrow.__pyobj__.Table
+    register_python_type_mapping
   end
 
-  class Table
-    include PyCall::PyObjectWrapper
-    wrap_class PyArrow.__pyobj__.Table
-  end
-
+  RecordBatch = __pyptr__.RecordBatch
   class RecordBatch
-    include PyCall::PyObjectWrapper
-    wrap_class PyArrow.__pyobj__.RecordBatch
+    register_python_type_mapping
   end
 end
 
@@ -80,4 +70,17 @@ begin
   require "#{major}.#{minor}/arrow_pycall.so"
 rescue LoadError
   require "arrow_pycall.so"
+end
+
+module PyArrow
+  Arrow.constants.each do |name|
+    case name.to_s
+    when "ChunkedArray"
+    when /Array\z/
+      py_arrow_array = __pyptr__.lib.__dict__[name.to_s]
+      next if py_arrow_array.nil?
+      py_arrow_array.__send__(:register_python_type_mapping)
+      py_arrow_array.__send__(:include, ArrayConvertable)
+    end
+  end
 end
