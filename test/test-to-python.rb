@@ -1,4 +1,4 @@
-# Copyright 2017 Kouhei Sutou <kou@clear-code.com>
+# Copyright 2017-2018 Kouhei Sutou <kou@clear-code.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ class ToPythonTest < Test::Unit::TestCase
                                shape,
                                strides,
                                names)
-    assert_equal(<<-TENSOR.chomp, tensor.to_python.to_numpy.__str__.())
+    assert_equal(<<-TENSOR.chomp, tensor.to_python.to_numpy.to_s)
 [[[ 1  2]
   [ 3  4]]
 

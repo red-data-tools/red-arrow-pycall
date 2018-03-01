@@ -1,4 +1,4 @@
-# Copyright 2017 Kouhei Sutou <kou@clear-code.com>
+# Copyright 2017-2018 Kouhei Sutou <kou@clear-code.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,5 +29,8 @@ end
   build_dir = source_dir
   add_depend_package_path(name, source_dir, build_dir)
 end
+
+pycall_spec = Gem::Specification.find_by_name("pycall")
+$INCFLAGS += " -I#{pycall_spec.gem_dir}/ext/pycall"
 
 create_makefile("arrow_pycall")

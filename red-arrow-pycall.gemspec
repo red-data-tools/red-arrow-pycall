@@ -1,6 +1,6 @@
 # -*- ruby -*-
 #
-# Copyright 2017 Kouhei Sutou <kou@clear-code.com>
+# Copyright 2017-2018 Kouhei Sutou <kou@clear-code.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ Gem::Specification.new do |spec|
   spec.test_files += Dir.glob("test/**/*")
 
   spec.add_runtime_dependency("red-arrow")
-  spec.add_runtime_dependency("pycall")
+  spec.add_runtime_dependency("pycall", ">= 1.1.0")
 
   spec.add_development_dependency("bundler")
   spec.add_development_dependency("rake")
