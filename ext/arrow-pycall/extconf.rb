@@ -30,7 +30,12 @@ end
   add_depend_package_path(name, source_dir, build_dir)
 end
 
-pycall_spec = Gem::Specification.find_by_name("pycall")
-$INCFLAGS += " -I#{pycall_spec.gem_dir}/ext/pycall"
+checking_for(checking_message("pycall"), "%s") do
+  pycall_version_path = File.join(__dir__, "..", "..", "pycall-version")
+  pycall_version = File.read(pycall_version_path).strip
+  pycall_spec = Gem::Specification.find_by_name("pycall", pycall_version)
+  $INCFLAGS += " -I#{pycall_spec.gem_dir}/ext/pycall"
+  pycall_spec.version
+end
 
 create_makefile("arrow_pycall")

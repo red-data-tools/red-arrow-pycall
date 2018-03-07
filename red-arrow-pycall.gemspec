@@ -18,8 +18,12 @@ clean_white_space = lambda do |entry|
   entry.gsub(/(\A\n+|\n+\z)/, '') + "\n"
 end
 
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "lib"))
+base_dir = __dir__
+lib_dir = File.join(base_dir, "lib")
+$LOAD_PATH.unshift(lib_dir)
 require "arrow-pycall/version"
+
+pycall_version = File.read(File.join(base_dir, "pycall-version")).strip
 
 Gem::Specification.new do |spec|
   spec.name = "red-arrow-pycall"
@@ -37,6 +41,7 @@ Gem::Specification.new do |spec|
   spec.license = "Apache-2.0"
   spec.files = ["README.md", "Rakefile", "Gemfile", "#{spec.name}.gemspec"]
   spec.files += [".yardopts"]
+  spec.files += ["pycall-version"]
   spec.files += Dir.glob("lib/**/*.rb")
   spec.files += Dir.glob("ext/**/*.{c,cpp}")
   spec.files += Dir.glob("doc/text/*")
@@ -44,7 +49,7 @@ Gem::Specification.new do |spec|
   spec.test_files += Dir.glob("test/**/*")
 
   spec.add_runtime_dependency("red-arrow")
-  spec.add_runtime_dependency("pycall", ">= 1.1.0")
+  spec.add_runtime_dependency("pycall", pycall_version)
 
   spec.add_development_dependency("bundler")
   spec.add_development_dependency("rake")
