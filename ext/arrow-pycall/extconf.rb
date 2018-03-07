@@ -17,11 +17,10 @@ require "mkmf-gnome2"
 unless required_pkg_config_package("arrow-glib")
   exit(false)
 end
-unless required_pkg_config_package("arrow-python")
-  unless NativePackageInstaller.install(:debian => "libarrow-python-dev",
-                                        :redhat => "arrow-python-devel")
-    exit(false)
-  end
+unless required_pkg_config_package("arrow-python",
+                                   :debian => "libarrow-python-dev",
+                                   :redhat => "arrow-python-devel")
+  exit(false)
 end
 
 [
