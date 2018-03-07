@@ -18,7 +18,9 @@ RUN \
     python3-setuptools
 
 RUN \
-  pip3 install cython
+  pip3 install \
+    cython \
+    pandas
 
 RUN \
   git clone \
