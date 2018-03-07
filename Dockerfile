@@ -12,17 +12,23 @@ RUN \
   apt update && \
   apt install -y \
     cmake \
-    cython3 \
     libarrow-glib-dev \
     libarrow-python-dev \
-    python3-setuptools \
-    python3-six
+    python3-pip \
+    python3-setuptools
 
 RUN \
-  git clone --depth 1 https://github.com/apache/arrow.git && \
-  (cd arrow/python && \
-   python3 setup.py install) && \
-  rm -rf arrow
+  pip3 install cython
+
+RUN \
+  git clone \
+    --depth 1 \
+    --branch apache-arrow-0.8.0 \
+    https://github.com/apache/arrow.git && \
+  (cd arrow && \
+    curl https://patch-diff.githubusercontent.com/raw/apache/arrow/pull/1721.diff | \
+      patch -p1) && \
+  python3 setup.py install
 
 RUN mkdir /app
 WORKDIR /app
