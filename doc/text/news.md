@@ -1,5 +1,11 @@
 # News
 
+## 0.0.4 - 2018-03-07
+
+### Improvements
+
+  * Added PyCall 1.1.0 support.
+
 ## 0.0.3 - 2017-07-13
 
 ### Improvements
