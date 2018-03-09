@@ -25,10 +25,12 @@ RUN \
 RUN \
   git clone \
     --depth 1 \
+    --branch apache-arrow-0.8.0 \
     https://github.com/apache/arrow.git && \
-  (cd arrow/python && \
-     python3 setup.py sdist && \
-     pip3 install dist/pyarrow-*.tar.gz)
+  (cd arrow && \
+    curl https://patch-diff.githubusercontent.com/raw/apache/arrow/pull/1721.diff | \
+      patch -p1) && \
+  (cd arrow/python && python3 setup.py install)
 
 RUN mkdir /app
 WORKDIR /app
