@@ -11,6 +11,7 @@ RUN \
   apt install --quiet -y --allow-unauthenticated red-data-tools-keyring && \
   apt update --quiet && \
   apt install --quiet -y \
+    cmake \
     libarrow-python-dev \
     libparquet-dev \
     python3-pip \
@@ -18,6 +19,10 @@ RUN \
 
 RUN \
   pip3 install \
+    --no-binary :all: \
+    Cython && \
+  pip3 install \
+    --no-binary :all: \
     pyarrow
 
 RUN mkdir /app
