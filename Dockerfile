@@ -23,7 +23,8 @@ RUN \
     Cython && \
   pip3 install \
     --no-binary :all: \
-    pyarrow
+    pyarrow \
+    pandas
 
 RUN mkdir /app
 WORKDIR /app
