@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <ruby.hpp>
+
 #include <arrow-glib/arrow-glib.hpp>
 
 #include <rbgobject.h>
@@ -236,21 +238,21 @@ Init_arrow_pycall(void)
 {
   arrow::py::import_pyarrow();
 
-  auto rbArrow = rb_const_get(rb_cObject, rb_intern("Arrow"));
-  auto rbPyArrow = rb_const_get(rb_cObject, rb_intern("PyArrow"));
+  auto rbArrow = rb_const_get_at(rb_cObject, rb_intern("Arrow"));
+  auto rbPyArrow = rb_const_get_at(rb_cObject, rb_intern("PyArrow"));
 
   {
-    auto rbArrowBuffer = rb_const_get(rbArrow, rb_intern("Buffer"));
+    auto rbArrowBuffer = rb_const_get_at(rbArrow, rb_intern("Buffer"));
     rb_define_method(rbArrowBuffer,
                      "to_python",
-                     (VALUE(*)(ANYARGS))rb_arrow_buffer_to_python,
+                     reinterpret_cast<rb::RawMethod>(rb_arrow_buffer_to_python),
                      0);
   }
   {
     auto rbPyArrowBuffer = rb_const_get(rbPyArrow, rb_intern("Buffer"));
     rb_define_method(rbPyArrowBuffer,
                      "to_ruby",
-                     (VALUE(*)(ANYARGS))rb_pycall_arrow_buffer_to_ruby,
+                     reinterpret_cast<rb::RawMethod>(rb_pycall_arrow_buffer_to_ruby),
                      0);
   }
 
@@ -258,14 +260,14 @@ Init_arrow_pycall(void)
     auto rbArrowDataType = rb_const_get(rbArrow, rb_intern("DataType"));
     rb_define_method(rbArrowDataType,
                      "to_python",
-                     (VALUE(*)(ANYARGS))rb_arrow_data_type_to_python,
+                     reinterpret_cast<rb::RawMethod>(rb_arrow_data_type_to_python),
                      0);
   }
   {
     auto rbPyArrowDataType = rb_const_get(rbPyArrow, rb_intern("DataType"));
     rb_define_method(rbPyArrowDataType,
                      "to_ruby",
-                     (VALUE(*)(ANYARGS))rb_pycall_arrow_data_type_to_ruby,
+                     reinterpret_cast<rb::RawMethod>(rb_pycall_arrow_data_type_to_ruby),
                      0);
   }
 
@@ -273,14 +275,14 @@ Init_arrow_pycall(void)
     auto rbArrowField = rb_const_get(rbArrow, rb_intern("Field"));
     rb_define_method(rbArrowField,
                      "to_python",
-                     (VALUE(*)(ANYARGS))rb_arrow_field_to_python,
+                     reinterpret_cast<rb::RawMethod>(rb_arrow_field_to_python),
                      0);
   }
   {
     auto rbPyArrowField = rb_const_get(rbPyArrow, rb_intern("Field"));
     rb_define_method(rbPyArrowField,
                      "to_ruby",
-                     (VALUE(*)(ANYARGS))rb_pycall_arrow_field_to_ruby,
+                     reinterpret_cast<rb::RawMethod>(rb_pycall_arrow_field_to_ruby),
                      0);
   }
 
@@ -288,14 +290,14 @@ Init_arrow_pycall(void)
     auto rbArrowSchema = rb_const_get(rbArrow, rb_intern("Schema"));
     rb_define_method(rbArrowSchema,
                      "to_python",
-                     (VALUE(*)(ANYARGS))rb_arrow_schema_to_python,
+                     reinterpret_cast<rb::RawMethod>(rb_arrow_schema_to_python),
                      0);
   }
   {
     auto rbPyArrowSchema = rb_const_get(rbPyArrow, rb_intern("Schema"));
     rb_define_method(rbPyArrowSchema,
                      "to_ruby",
-                     (VALUE(*)(ANYARGS))rb_pycall_arrow_schema_to_ruby,
+                     reinterpret_cast<rb::RawMethod>(rb_pycall_arrow_schema_to_ruby),
                      0);
   }
 
@@ -303,7 +305,7 @@ Init_arrow_pycall(void)
     auto rbArrowArray = rb_const_get(rbArrow, rb_intern("Array"));
     rb_define_method(rbArrowArray,
                      "to_python",
-                     (VALUE(*)(ANYARGS))rb_arrow_array_to_python,
+                     reinterpret_cast<rb::RawMethod>(rb_arrow_array_to_python),
                      0);
   }
   {
@@ -311,7 +313,7 @@ Init_arrow_pycall(void)
       rb_define_module_under(rbPyArrow, "ArrayConvertable");
     rb_define_method(rbPyArrowArrayConvertable,
                      "to_ruby",
-                     (VALUE(*)(ANYARGS))rb_pycall_arrow_array_to_ruby,
+                     reinterpret_cast<rb::RawMethod>(rb_pycall_arrow_array_to_ruby),
                      0);
   }
 
@@ -319,14 +321,14 @@ Init_arrow_pycall(void)
     auto rbArrowTensor = rb_const_get(rbArrow, rb_intern("Tensor"));
     rb_define_method(rbArrowTensor,
                      "to_python",
-                     (VALUE(*)(ANYARGS))rb_arrow_tensor_to_python,
+                     reinterpret_cast<rb::RawMethod>(rb_arrow_tensor_to_python),
                      0);
   }
   {
     auto rbPyArrowTensor = rb_const_get(rbPyArrow, rb_intern("Tensor"));
     rb_define_method(rbPyArrowTensor,
                      "to_ruby",
-                     (VALUE(*)(ANYARGS))rb_pycall_arrow_tensor_to_ruby,
+                     reinterpret_cast<rb::RawMethod>(rb_pycall_arrow_tensor_to_ruby),
                      0);
   }
 
@@ -334,14 +336,14 @@ Init_arrow_pycall(void)
     auto rbArrowColumn = rb_const_get(rbArrow, rb_intern("Column"));
     rb_define_method(rbArrowColumn,
                      "to_python",
-                     (VALUE(*)(ANYARGS))rb_arrow_column_to_python,
+                     reinterpret_cast<rb::RawMethod>(rb_arrow_column_to_python),
                      0);
   }
   {
     auto rbPyArrowColumn = rb_const_get(rbPyArrow, rb_intern("Column"));
     rb_define_method(rbPyArrowColumn,
                      "to_ruby",
-                     (VALUE(*)(ANYARGS))rb_pycall_arrow_column_to_ruby,
+                     reinterpret_cast<rb::RawMethod>(rb_pycall_arrow_column_to_ruby),
                      0);
   }
 
@@ -349,14 +351,14 @@ Init_arrow_pycall(void)
     auto rbArrowTable = rb_const_get(rbArrow, rb_intern("Table"));
     rb_define_method(rbArrowTable,
                      "to_python",
-                     (VALUE(*)(ANYARGS))rb_arrow_table_to_python,
+                     reinterpret_cast<rb::RawMethod>(rb_arrow_table_to_python),
                      0);
   }
   {
     auto rbPyArrowTable = rb_const_get(rbPyArrow, rb_intern("Table"));
     rb_define_method(rbPyArrowTable,
                      "to_ruby",
-                     (VALUE(*)(ANYARGS))rb_pycall_arrow_table_to_ruby,
+                     reinterpret_cast<rb::RawMethod>(rb_pycall_arrow_table_to_ruby),
                      0);
   }
 
@@ -364,7 +366,7 @@ Init_arrow_pycall(void)
     auto rbArrowRecordBatch = rb_const_get(rbArrow, rb_intern("RecordBatch"));
     rb_define_method(rbArrowRecordBatch,
                      "to_python",
-                     (VALUE(*)(ANYARGS))rb_arrow_record_batch_to_python,
+                     reinterpret_cast<rb::RawMethod>(rb_arrow_record_batch_to_python),
                      0);
   }
   {
@@ -372,7 +374,7 @@ Init_arrow_pycall(void)
       rb_const_get(rbPyArrow, rb_intern("RecordBatch"));
     rb_define_method(rbPyArrowRecordBatch,
                      "to_ruby",
-                     (VALUE(*)(ANYARGS))rb_pycall_arrow_record_batch_to_ruby,
+                     reinterpret_cast<rb::RawMethod>(rb_pycall_arrow_record_batch_to_ruby),
                      0);
   }
 }
