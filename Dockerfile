@@ -1,17 +1,21 @@
-FROM ruby:2.5-stretch
+FROM ruby:latest
 
 MAINTAINER Kouhei Sutou <kou@clear-code.com>
 
 RUN \
   apt update --quiet && \
-  apt install --quiet -y apt-transport-https && \
-  echo "deb https://packages.red-data-tools.org/debian/ stretch main" > \
-    /etc/apt/sources.list.d/red-data-tools.list && \
-  apt update --quiet --allow-insecure-repositories && \
-  apt install --quiet -y --allow-unauthenticated red-data-tools-keyring && \
+  apt install --quiet -y apt-transport-https lsb-release && \
+  wget -O /usr/share/keyrings/apache-arrow-keyring.gpg \
+    https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg && \
+  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main" > \
+    /etc/apt/sources.list.d/apache-arrow.list && \
+  curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
+  echo "deb http://apt.llvm.org/$(lsb_release --codename --short)/ llvm-toolchain-$(lsb_release --codename --short)-7 main" > \
+    /etc/apt/sources.list.d/llvm.list && \
   apt update --quiet && \
   apt install --quiet -y \
     cmake \
+    libarrow-glib-dev \
     libarrow-python-dev \
     libparquet-dev \
     python3-pip \
