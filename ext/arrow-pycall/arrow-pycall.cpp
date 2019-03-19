@@ -96,7 +96,7 @@ rb_pycall_arrow_field_to_ruby(VALUE self)
   GError *error = NULL;
   if (!garrow_error_check(&error, status, "[pyarrow][field][to-ruby]"))
     RG_RAISE_ERROR(error);
-  auto garrow_field = garrow_field_new_raw(&arrow_field);
+  auto garrow_field = garrow_field_new_raw(&arrow_field, nullptr);
   return GOBJ2RVAL(garrow_field);
 }
 
