@@ -1,10 +1,10 @@
-FROM ruby:latest
+FROM rubylang/ruby
 
 MAINTAINER Kouhei Sutou <kou@clear-code.com>
 
 RUN \
   apt update --quiet && \
-  apt install --quiet -y apt-transport-https lsb-release && \
+  apt install --quiet -y apt-transport-https curl gnupg2 lsb-release wget && \
   wget -O /usr/share/keyrings/apache-arrow-keyring.gpg \
     https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg && \
   echo "deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main" > \
@@ -18,17 +18,15 @@ RUN \
     libarrow-glib-dev \
     libarrow-python-dev \
     libparquet-dev \
+    libparquet-glib-dev \
+    libgirepository1.0-dev \
     python3-pip \
-    python3-setuptools
+    python3-setuptools && \
+  rm -rf /var/lib/apt/lists/*
 
-RUN \
-  pip3 install \
-    --no-binary :all: \
-    Cython && \
-  pip3 install \
-    --no-binary :all: \
-    pyarrow \
-    pandas
+RUN pip3 install --no-binary :all: Cython && \
+    pip3 install --no-binary :all: pyarrow && \
+    pip3 install pandas
 
 RUN mkdir /app
 WORKDIR /app
