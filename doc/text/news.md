@@ -1,5 +1,13 @@
 # News
 
+## 0.0.5 - 2019-03-21
+
+### Improvements
+
+  * Added support for auto Apache Arrow C++ Python module install.
+
+  * Added support for Apache Arrow 0.12.0 or later.
+
 ## 0.0.4 - 2018-03-07
 
 ### Improvements
